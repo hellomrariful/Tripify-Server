@@ -1,5 +1,5 @@
 const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors')
 require('dotenv').config();
 const app = express()
@@ -42,25 +42,33 @@ async function run() {
     })
 
     // Create Product data
-    // app.post("/dashboard/AddService", async (req, res) => {
-    //   const service = req.body;
-    //   console.log(service);
-    //   const result = await serviceCollection.insertOne(service)
-    //   res.send(result)
-    // })
-
-
     app.post("/dashboard/AddService", async (req, res) => {
       const service = req.body;
-      try {
-        const result = await serviceCollection.insertOne(service);
-        console.log(result);
-        res.send(result);
-      } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      }
-    });
+      console.log(service);
+      const result = await serviceCollection.insertOne(service)
+      res.send(result)
+    })
+
+
+    app.get('/dashboard/AddServices/:id', async (req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await serviceCollection.findOne(query)
+      res.send(result)
+    })
+
+
+    // app.post("/dashboard/AddService", async (req, res) => {
+    //   const service = req.body;
+    //   try {
+    //     const result = await serviceCollection.insertOne(service);
+    //     console.log(result);
+    //     res.send(result);
+    //   } catch (error) {
+    //     console.error(error);
+    //     res.status(500).send("Internal Server Error");
+    //   }
+    // });
 
 
     // Send a ping to confirm a successful connection
