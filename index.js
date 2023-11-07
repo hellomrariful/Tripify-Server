@@ -14,7 +14,8 @@ app.use(express.json())
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.c6bvskv.mongodb.net/?retryWrites=true&w=majority`;
 
-console.log(process.env.DB_PASS)
+
+
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -31,9 +32,37 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const serviceCollection = client.db('serviceDB').collection('service');
+
+    // read data
+    app.get("/dashboard/AddService", async (req, res) => {
+      const cursor = serviceCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+
+    // Create Product data
+    // app.post("/dashboard/AddService", async (req, res) => {
+    //   const service = req.body;
+    //   console.log(service);
+    //   const result = await serviceCollection.insertOne(service)
+    //   res.send(result)
+    // })
 
 
-    
+    app.post("/dashboard/AddService", async (req, res) => {
+      const service = req.body;
+      try {
+        const result = await serviceCollection.insertOne(service);
+        console.log(result);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -48,9 +77,9 @@ run().catch(console.dir);
 
 // testing
 app.get('/', (req, res) => {
-    res.send('Server is running')
-} )
+  res.send('Server is running')
+})
 
 app.listen(port, () => {
-console.log(`Server is running on port: ${port}`);
+  console.log(`Server is running on port: ${port}`);
 })
