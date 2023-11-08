@@ -27,14 +27,12 @@ async function run() {
 
     const serviceCollection = client.db('serviceDB').collection('service');
 
-    // read data
     app.get("/dashboard/AddService", async (req, res) => {
       const cursor = serviceCollection.find()
       const result = await cursor.toArray()
       res.send(result)
     })
 
-    // Create Product data
     app.post("/dashboard/AddService", async (req, res) => {
       const service = req.body;
       console.log(service);
@@ -49,7 +47,6 @@ async function run() {
       res.send(result)
     })
 
-    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // await client.close();
@@ -57,7 +54,6 @@ async function run() {
 }
 run().catch(console.dir);
 
-// testing
 app.get('/', (req, res) => {
   res.send('Server is running')
 })
