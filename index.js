@@ -4,7 +4,7 @@ const cors = require('cors')
 require('dotenv').config();
 const app = express()
 const port = process.env.PORT || 5000
-
+// cors
 app.use(cors())
 app.use(express.json())
 
@@ -20,25 +20,24 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-
     const serviceCollection = client.db('serviceDB').collection('service');
-
+    // get
     app.get("/dashboard/AddService", async (req, res) => {
       const cursor = serviceCollection.find()
       const result = await cursor.toArray()
       res.send(result)
     })
-
+    // post
     app.post("/dashboard/AddService", async (req, res) => {
       const service = req.body;
       console.log(service);
       const result = await serviceCollection.insertOne(service)
       res.send(result)
     })
-
-    app.get('/dashboard/AddServices/:id', async (req, res) =>{
+    // specific get
+    app.get('/dashboard/AddServices/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await serviceCollection.findOne(query)
       res.send(result)
     })
@@ -52,6 +51,9 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Server is running')
 })
+
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
