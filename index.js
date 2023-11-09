@@ -55,20 +55,19 @@ async function run() {
     })
 
     // Get products by user
-    app.get("/cart/:email", async (req, res) =>{
-        const email = req.params.email;
-        const filter = { userEmail: email };
-        const result = await cartCollection.find(filter).toArray();
-        res.send(result);
+    app.get("/cart/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { userEmail: email };
+      const result = await cartCollection.find(filter).toArray();
+      res.send(result);
     })
 
     // get
     app.get("/cart", async (req, res) => {
       const cursor = cartCollection.find()
       const result = await cursor.toArray()
-      res.send(result) 
+      res.send(result)
     })
-
 
     // delete
     app.delete('/cart/:id', async (req, res) => {
@@ -77,10 +76,6 @@ async function run() {
       const result = await cartCollection.deleteOne(query)
       res.send(result)
     })
-
-
-
-
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
@@ -91,9 +86,6 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Server is running')
 })
-
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
