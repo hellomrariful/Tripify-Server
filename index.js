@@ -20,7 +20,9 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+
     const serviceCollection = client.db('serviceDB').collection('service');
+
     // get
     app.get("/dashboard/AddService", async (req, res) => {
       const cursor = serviceCollection.find()
@@ -41,6 +43,44 @@ async function run() {
       const result = await serviceCollection.findOne(query)
       res.send(result)
     })
+
+    // cart related
+    const cartCollection = client.db('serviceDB').collection('Carts');
+
+    // cart post
+    app.post('/cart', async (req, res) => {
+      const cart = req.body;
+      const result = await cartCollection.insertOne(cart)
+      res.send(result)
+    })
+
+    // Get products by user
+    app.get("/cart/:email", async (req, res) =>{
+        const email = req.params.email;
+        const filter = { userEmail: email };
+        const result = await cartCollection.find(filter).toArray();
+        res.send(result);
+    })
+
+    // get
+    app.get("/cart", async (req, res) => {
+      const cursor = cartCollection.find()
+      const result = await cursor.toArray()
+      res.send(result) 
+    })
+
+
+    // delete
+    app.delete('/cart/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await cartCollection.deleteOne(query)
+      res.send(result)
+    })
+
+
+
+
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
